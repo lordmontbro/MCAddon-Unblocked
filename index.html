@@ -154,57 +154,52 @@
       padding-bottom: 64px;
     }
 
-    .toolbar {
+    .search-row {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      margin: 18px 0 24px;
-    }
-
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    .filter-button {
-      padding: 9px 14px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: var(--panel);
-      color: var(--text);
-      cursor: pointer;
-    }
-
-    .filter-button:hover,
-    .filter-button[aria-pressed="true"] {
-      border-color: var(--fire);
-      background: #281414;
-      color: var(--fire-bright);
-      box-shadow: 0 0 14px rgba(237, 52, 52, .12);
+      justify-content: flex-end;
+      margin: 18px 0 34px;
     }
 
     .search {
-      width: min(100%, 290px);
+      width: min(100%, 340px);
       padding: 10px 14px;
       border: 1px solid var(--border);
       border-radius: 10px;
       background: var(--black-soft);
       color: var(--text);
+      font: inherit;
     }
 
     .search:focus,
-    .filter-button:focus-visible,
-    .download:focus-visible {
+    .addon-link:focus-visible {
       outline: 3px solid var(--fire);
       outline-offset: 3px;
+    }
+
+    .addon-section {
+      margin-bottom: 44px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      font-size: 1.8rem;
+    }
+
+    .section-heading::after {
+      content: "";
+      height: 2px;
+      flex: 1;
+      background: linear-gradient(90deg, var(--fire), transparent);
+    }
+
+    .section-description {
+      margin: -10px 0 18px;
+      color: var(--muted);
     }
 
     .grid {
@@ -226,6 +221,11 @@
         linear-gradient(145deg, rgba(255, 71, 71, .035), transparent 45%),
         var(--panel);
       box-shadow: 0 12px 30px rgba(0, 0, 0, .24);
+    }
+
+    .card[hidden],
+    .addon-section[hidden] {
+      display: none;
     }
 
     .card::after {
@@ -252,7 +252,7 @@
       font-size: 1.7rem;
     }
 
-    .card h2 {
+    .card h3 {
       margin: 0 0 6px;
       font-size: 1.25rem;
     }
@@ -273,7 +273,7 @@
       font-size: .8rem;
     }
 
-    .download {
+    .addon-link {
       position: relative;
       z-index: 1;
       display: inline-block;
@@ -289,7 +289,7 @@
       box-shadow: 0 8px 20px rgba(237, 52, 52, .14);
     }
 
-    .download:hover {
+    .addon-link:hover {
       background: linear-gradient(135deg, var(--fire-bright), #c91f29);
     }
 
@@ -322,6 +322,14 @@
       .hero {
         min-height: 330px;
       }
+
+      .search-row {
+        justify-content: stretch;
+      }
+
+      .search {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -347,14 +355,7 @@
   </section>
 
   <main class="container" id="addons">
-    <div class="toolbar">
-      <div class="filters" aria-label="Filter addons">
-        <button class="filter-button" type="button" data-filter="all" aria-pressed="true">All</button>
-        <button class="filter-button" type="button" data-filter="gameplay" aria-pressed="false">Gameplay</button>
-        <button class="filter-button" type="button" data-filter="mobs" aria-pressed="false">Mobs</button>
-        <button class="filter-button" type="button" data-filter="tools" aria-pressed="false">Tools</button>
-      </div>
-
+    <div class="search-row">
       <input
         class="search"
         id="search"
@@ -364,39 +365,66 @@
       >
     </div>
 
-    <section class="grid" id="addon-grid" aria-label="Minecraft addons">
-      <article class="card" data-category="gameplay">
-        <div class="card-icon" aria-hidden="true">🔥</div>
-        <span class="tag">Gameplay</span>
-        <h2>Hypnomined</h2>
-        <p>In this custom-made Minecraft addon, you unlock the pendulum! It is a special item that you can level up to be able to hypnotize players and mobs! Once you have hypnotized a mob or player, they follow specific commands like protect and attack.</p>
-        <a class="download" href="download.html?file=downloads/hypnomined.mcaddon">
-  Install this addon
-</a>
-      </article>
+    <section class="addon-section" data-addon-section aria-labelledby="custom-heading">
+      <h2 class="section-heading" id="custom-heading">Custom</h2>
+      <p class="section-description">Addons made by me.</p>
 
-      <article class="card" data-category="mobs">
-        <div class="card-icon" aria-hidden="true">🐉</div>
-        <span class="tag">Mobs</span>
-        <h2>Shadow Creatures</h2>
-        <p>Add dangerous and mysterious creatures to your world.</p>
-        <a class="download" href="download.html?file=downloads/nonexistant_file.mcaddon">
-  Download addon
-</a>
-      </article>
-
-      <article class="card" data-category="tools">
-        <div class="card-icon" aria-hidden="true">⚒️</div>
-        <span class="tag">Tools</span>
-        <h2>Forge Tools</h2>
-        <p>Powerful tools for building your next dark fortress.</p>
-        <a class="download" href="download.html?file=downloads/nonexistant_file.mcaddon">
-  Download addon
-</a>
-      </article>
+      <div class="grid">
+        <article class="card" data-addon-card>
+          <div class="card-icon" aria-hidden="true">🔥</div>
+          <span class="tag">Custom</span>
+          <h3>Hypnomined</h3>
+          <p>
+            In this custom-made Minecraft addon, you unlock the pendulum!
+            Level it up to hypnotize players and mobs. Give hypnotized
+            creatures commands like protect and attack.
+          </p>
+          <a
+            class="addon-link"
+            href="download.html?file=downloads/hypnomined.mcaddon"
+          >Install this addon</a>
+        </article>
+      </div>
     </section>
 
-    <p class="empty-state" id="empty-state">No addons found. Try another search.</p>
+    <section class="addon-section" data-addon-section aria-labelledby="available-heading">
+      <h2 class="section-heading" id="available-heading">Available</h2>
+      <p class="section-description">
+        Addons from CurseForge. Replace these examples with the projects you want to share.
+      </p>
+
+      <div class="grid">
+        <article class="card" data-addon-card>
+          <div class="card-icon" aria-hidden="true">🐉</div>
+          <span class="tag">CurseForge</span>
+          <h3>CurseForge Addon One</h3>
+          <p>Replace this with the addon name and a short description.</p>
+          <a
+            class="addon-link"
+            href="https://www.curseforge.com/minecraft-bedrock"
+            target="_blank"
+            rel="noopener noreferrer"
+          >View on CurseForge</a>
+        </article>
+
+        <article class="card" data-addon-card>
+          <div class="card-icon" aria-hidden="true">⚒️</div>
+          <span class="tag">CurseForge</span>
+          <h3>CurseForge Addon Two</h3>
+          <p>Replace this example with another CurseForge addon you recommend.</p>
+          <a
+            class="addon-link"
+            href="https://www.curseforge.com/minecraft-bedrock"
+            target="_blank"
+            rel="noopener noreferrer"
+          >View on CurseForge</a>
+        </article>
+      </div>
+    </section>
+
+    <p class="empty-state" id="empty-state" aria-live="polite">
+      No addons found. Try another search.
+    </p>
   </main>
 
   <footer>
@@ -407,40 +435,32 @@
 
   <script>
     const searchInput = document.querySelector("#search");
-    const filterButtons = document.querySelectorAll(".filter-button");
-    const cards = document.querySelectorAll(".card");
+    const cards = document.querySelectorAll("[data-addon-card]");
+    const sections = document.querySelectorAll("[data-addon-section]");
     const emptyState = document.querySelector("#empty-state");
-
-    let activeFilter = "all";
 
     function updateCards() {
       const searchTerm = searchInput.value.trim().toLowerCase();
       let visibleCount = 0;
 
       cards.forEach((card) => {
-        const matchesCategory =
-          activeFilter === "all" || card.dataset.category === activeFilter;
         const matchesSearch = card.textContent.toLowerCase().includes(searchTerm);
-        const isVisible = matchesCategory && matchesSearch;
+        card.hidden = !matchesSearch;
 
-        card.hidden = !isVisible;
-        if (isVisible) visibleCount++;
+        if (matchesSearch) {
+          visibleCount++;
+        }
+      });
+
+      sections.forEach((section) => {
+        const hasVisibleCards = [...section.querySelectorAll("[data-addon-card]")]
+          .some((card) => !card.hidden);
+
+        section.hidden = !hasVisibleCards;
       });
 
       emptyState.style.display = visibleCount === 0 ? "block" : "none";
     }
-
-    filterButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        activeFilter = button.dataset.filter;
-
-        filterButtons.forEach((item) => {
-          item.setAttribute("aria-pressed", String(item === button));
-        });
-
-        updateCards();
-      });
-    });
 
     searchInput.addEventListener("input", updateCards);
   </script>
