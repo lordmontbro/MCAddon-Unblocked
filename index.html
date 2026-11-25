@@ -20,13 +20,8 @@
       --border: #432727;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -39,9 +34,7 @@
       line-height: 1.6;
     }
 
-    a {
-      color: inherit;
-    }
+    a { color: inherit; }
 
     .container {
       width: min(1100px, calc(100% - 32px));
@@ -90,13 +83,33 @@
         inset 0 0 12px rgba(237, 52, 52, .15);
     }
 
-    .nav a:last-child {
-      color: var(--muted);
-      text-decoration: none;
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 18px;
+      margin-left: auto;
     }
 
-    .nav a:last-child:hover {
+    .nav-links a {
+      color: var(--muted);
+      font-size: .95rem;
+      font-weight: 750;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible,
+    .nav-links a[aria-current="page"] {
       color: var(--fire-bright);
+    }
+
+    .nav-links a:focus-visible,
+    .search:focus,
+    .addon-link:focus-visible {
+      outline: 3px solid var(--fire);
+      outline-offset: 3px;
     }
 
     .hero {
@@ -121,15 +134,8 @@
       filter: blur(70px);
     }
 
-    .hero::before {
-      left: -90px;
-      bottom: -130px;
-    }
-
-    .hero::after {
-      right: -90px;
-      top: -170px;
-    }
+    .hero::before { left: -90px; bottom: -130px; }
+    .hero::after { right: -90px; top: -170px; }
 
     .hero h1 {
       margin: 0 0 12px;
@@ -139,9 +145,7 @@
       text-shadow: 0 0 30px rgba(237, 52, 52, .22);
     }
 
-    .hero h1 span {
-      color: var(--fire-bright);
-    }
+    .hero h1 span { color: var(--fire-bright); }
 
     .hero p {
       max-width: 620px;
@@ -150,9 +154,7 @@
       font-size: 1.1rem;
     }
 
-    main {
-      padding-bottom: 64px;
-    }
+    main { padding-bottom: 64px; }
 
     .search-row {
       display: flex;
@@ -170,15 +172,7 @@
       font: inherit;
     }
 
-    .search:focus,
-    .addon-link:focus-visible {
-      outline: 3px solid var(--fire);
-      outline-offset: 3px;
-    }
-
-    .addon-section {
-      margin-bottom: 44px;
-    }
+    .addon-section { margin-bottom: 44px; }
 
     .section-heading {
       display: flex;
@@ -224,9 +218,7 @@
     }
 
     .card[hidden],
-    .addon-section[hidden] {
-      display: none;
-    }
+    .addon-section[hidden] { display: none; }
 
     .card::after {
       content: "";
@@ -252,15 +244,8 @@
       font-size: 1.7rem;
     }
 
-    .card h3 {
-      margin: 0 0 6px;
-      font-size: 1.25rem;
-    }
-
-    .card p {
-      margin: 0 0 16px;
-      color: var(--muted);
-    }
+    .card h3 { margin: 0 0 6px; font-size: 1.25rem; }
+    .card p { margin: 0 0 16px; color: var(--muted); }
 
     .tag {
       align-self: flex-start;
@@ -289,9 +274,7 @@
       box-shadow: 0 8px 20px rgba(237, 52, 52, .14);
     }
 
-    .addon-link:hover {
-      background: linear-gradient(135deg, var(--fire-bright), #c91f29);
-    }
+    .addon-link:hover { background: linear-gradient(135deg, var(--fire-bright), #c91f29); }
 
     .empty-state {
       display: none;
@@ -310,37 +293,34 @@
     }
 
     @media (max-width: 560px) {
-      .nav {
-        min-height: 68px;
-      }
+      .nav { min-height: 68px; }
+      .brand-avatar { width: 46px; height: 46px; }
+      .brand { font-size: .95rem; }
+      .nav-links { gap: 10px; }
+      .nav-links a { font-size: .82rem; }
+      .hero { min-height: 330px; }
+      .search-row { justify-content: stretch; }
+      .search { width: 100%; }
+    }
 
-      .brand-avatar {
-        width: 46px;
-        height: 46px;
-      }
-
-      .hero {
-        min-height: 330px;
-      }
-
-      .search-row {
-        justify-content: stretch;
-      }
-
-      .search {
-        width: 100%;
-      }
+    @media (max-width: 430px) {
+      .brand span { display: none; }
     }
   </style>
 </head>
 <body>
   <header>
     <div class="container nav">
-      <a class="brand" href="#">
+      <a class="brand" href="index.html">
         <img class="brand-avatar" src="avatar.png" alt="Addon mascot">
         <span>My Addon World</span>
       </a>
-      <a href="#addons">Browse</a>
+
+      <nav class="nav-links" aria-label="Account and server navigation">
+        <a href="login.html">Login</a>
+        <a href="signup.html">Sign Up</a>
+        <a href="servers.html">Servers</a>
+      </nav>
     </div>
   </header>
 
@@ -390,7 +370,8 @@
     <section class="addon-section" data-addon-section aria-labelledby="available-heading">
       <h2 class="section-heading" id="available-heading">Available</h2>
       <p class="section-description">
-        Addons from CurseForge. <p href="curseforge"> Check here for more! </p>
+        Addons from CurseForge.
+        <a href="curseforge.html">Check here for more!</a>
       </p>
 
       <div class="grid">
@@ -447,15 +428,12 @@
         const matchesSearch = card.textContent.toLowerCase().includes(searchTerm);
         card.hidden = !matchesSearch;
 
-        if (matchesSearch) {
-          visibleCount++;
-        }
+        if (matchesSearch) visibleCount++;
       });
 
       sections.forEach((section) => {
         const hasVisibleCards = [...section.querySelectorAll("[data-addon-card]")]
           .some((card) => !card.hidden);
-
         section.hidden = !hasVisibleCards;
       });
 
