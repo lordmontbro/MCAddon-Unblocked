@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Browse and download my Minecraft addons.">
+  <title>My Minecraft Addons</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --black: #090909;
+      --black-soft: #111111;
+      --red-black: #1a0909;
+      --panel: #171414;
+      --panel-light: #251918;
+      --fire: #ed3434;
+      --fire-bright: #ff5a3d;
+      --text: #fff7f5;
+      --muted: #baa9a6;
+      --border: #432727;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% 15%, rgba(183, 28, 28, .18), transparent 30rem),
+        linear-gradient(180deg, var(--red-black), var(--black) 42%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .container {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+      background: rgba(9, 9, 9, .92);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text);
+      font-size: 1.12rem;
+      font-weight: 850;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .brand-avatar {
+      width: 54px;
+      height: 54px;
+      object-fit: cover;
+      object-position: center;
+      border: 2px solid var(--fire);
+      border-radius: 12px;
+      background: #0d1326;
+      box-shadow:
+        0 0 18px rgba(237, 52, 52, .35),
+        inset 0 0 12px rgba(237, 52, 52, .15);
+    }
+
+    .nav a:last-child {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .nav a:last-child:hover {
+      color: var(--fire-bright);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 390px;
+      display: grid;
+      place-items: center;
+      padding: 60px 0;
+      text-align: center;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: rgba(210, 31, 31, .18);
+      filter: blur(70px);
+    }
+
+    .hero::before {
+      left: -90px;
+      bottom: -130px;
+    }
+
+    .hero::after {
+      right: -90px;
+      top: -170px;
+    }
+
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      line-height: 1;
+      text-transform: uppercase;
+      text-shadow: 0 0 30px rgba(237, 52, 52, .22);
+    }
+
+    .hero h1 span {
+      color: var(--fire-bright);
+    }
+
+    .hero p {
+      max-width: 620px;
+      margin: 18px auto 0;
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+
+    main {
+      padding-bottom: 64px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin: 18px 0 24px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .filter-button {
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .filter-button:hover,
+    .filter-button[aria-pressed="true"] {
+      border-color: var(--fire);
+      background: #281414;
+      color: var(--fire-bright);
+      box-shadow: 0 0 14px rgba(237, 52, 52, .12);
+    }
+
+    .search {
+      width: min(100%, 290px);
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--black-soft);
+      color: var(--text);
+    }
+
+    .search:focus,
+    .filter-button:focus-visible,
+    .download:focus-visible {
+      outline: 3px solid var(--fire);
+      outline-offset: 3px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 260px;
+      overflow: hidden;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background:
+        linear-gradient(145deg, rgba(255, 71, 71, .035), transparent 45%),
+        var(--panel);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .24);
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      right: -50px;
+      bottom: -70px;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: rgba(237, 52, 52, .08);
+      filter: blur(18px);
+    }
+
+    .card-icon {
+      display: grid;
+      width: 52px;
+      height: 52px;
+      margin-bottom: 12px;
+      place-items: center;
+      border: 1px solid #582626;
+      border-radius: 12px;
+      background: var(--panel-light);
+      font-size: 1.7rem;
+    }
+
+    .card h2 {
+      margin: 0 0 6px;
+      font-size: 1.25rem;
+    }
+
+    .card p {
+      margin: 0 0 16px;
+      color: var(--muted);
+    }
+
+    .tag {
+      align-self: flex-start;
+      margin-bottom: 14px;
+      padding: 3px 9px;
+      border: 1px solid #632929;
+      border-radius: 999px;
+      background: #2c1515;
+      color: #ffa59a;
+      font-size: .8rem;
+    }
+
+    .download {
+      position: relative;
+      z-index: 1;
+      display: inline-block;
+      margin-top: auto;
+      padding: 10px 14px;
+      border: 1px solid var(--fire-bright);
+      border-radius: 9px;
+      background: linear-gradient(135deg, #c91f29, #8d151d);
+      color: white;
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(237, 52, 52, .14);
+    }
+
+    .download:hover {
+      background: linear-gradient(135deg, var(--fire-bright), #c91f29);
+    }
+
+    .empty-state {
+      display: none;
+      padding: 32px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    footer {
+      padding: 24px 0;
+      border-top: 1px solid var(--border);
+      background: #080808;
+      color: var(--muted);
+      font-size: .9rem;
+      text-align: center;
+    }
+
+    @media (max-width: 560px) {
+      .nav {
+        min-height: 68px;
+      }
+
+      .brand-avatar {
+        width: 46px;
+        height: 46px;
+      }
+
+      .hero {
+        min-height: 330px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#">
+        <img class="brand-avatar" src="avatar.png" alt="Addon mascot">
+        <span>My Addon World</span>
+      </a>
+      <a href="#addons">Browse</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Enter the <span>inferno</span>.</h1>
+      <p>
+        Discover my Minecraft addons, unleash new powers, and build your
+        next adventure.
+      </p>
+    </div>
+  </section>
+
+  <main class="container" id="addons">
+    <div class="toolbar">
+      <div class="filters" aria-label="Filter addons">
+        <button class="filter-button" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="filter-button" type="button" data-filter="gameplay" aria-pressed="false">Gameplay</button>
+        <button class="filter-button" type="button" data-filter="mobs" aria-pressed="false">Mobs</button>
+        <button class="filter-button" type="button" data-filter="tools" aria-pressed="false">Tools</button>
+      </div>
+
+      <input
+        class="search"
+        id="search"
+        type="search"
+        placeholder="Search addons..."
+        aria-label="Search addons"
+      >
+    </div>
+
+    <section class="grid" id="addon-grid" aria-label="Minecraft addons">
+      <article class="card" data-category="gameplay">
+        <div class="card-icon" aria-hidden="true">🔥</div>
+        <span class="tag">Gameplay</span>
+        <h2>Infernal Survival</h2>
+        <p>A sample addon card. Replace this with a description of your addon.</p>
+        <a class="download" href="downloads/infernal-survival.mcaddon" download>Download addon</a>
+      </article>
+
+      <article class="card" data-category="mobs">
+        <div class="card-icon" aria-hidden="true">🐉</div>
+        <span class="tag">Mobs</span>
+        <h2>Shadow Creatures</h2>
+        <p>Add dangerous and mysterious creatures to your world.</p>
+        <a class="download" href="downloads/shadow-creatures.mcaddon" download>Download addon</a>
+      </article>
+
+      <article class="card" data-category="tools">
+        <div class="card-icon" aria-hidden="true">⚒️</div>
+        <span class="tag">Tools</span>
+        <h2>Forge Tools</h2>
+        <p>Powerful tools for building your next dark fortress.</p>
+        <a class="download" href="downloads/forge-tools.mcaddon" download>Download addon</a>
+      </article>
+    </section>
+
+    <p class="empty-state" id="empty-state">No addons found. Try another search.</p>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Made by [Your Name]. Not an official Minecraft website.</p>
+    </div>
+  </footer>
+
+  <script>
+    const searchInput = document.querySelector("#search");
+    const filterButtons = document.querySelectorAll(".filter-button");
+    const cards = document.querySelectorAll(".card");
+    const emptyState = document.querySelector("#empty-state");
+
+    let activeFilter = "all";
+
+    function updateCards() {
+      const searchTerm = searchInput.value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const matchesCategory =
+          activeFilter === "all" || card.dataset.category === activeFilter;
+        const matchesSearch = card.textContent.toLowerCase().includes(searchTerm);
+        const isVisible = matchesCategory && matchesSearch;
+
+        card.hidden = !isVisible;
+        if (isVisible) visibleCount++;
+      });
+
+      emptyState.style.display = visibleCount === 0 ? "block" : "none";
+    }
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeFilter = button.dataset.filter;
+
+        filterButtons.forEach((item) => {
+          item.setAttribute("aria-pressed", String(item === button));
+        });
+
+        updateCards();
+      });
+    });
+
+    searchInput.addEventListener("input", updateCards);
+  </script>
+</body>
+</html>
