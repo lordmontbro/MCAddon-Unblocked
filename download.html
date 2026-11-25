@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090909">
+  <title>Preparing your addon..</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #090909;
+      --panel: #171414;
+      --border: #432727;
+      --red: #ed3434;
+      --white: #fff;
+      --muted: #baa9a6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      margin: 0;
+      padding: 24px;
+      background:
+        radial-gradient(ellipse at 50% 35%, rgba(183, 28, 28, .2), transparent 55%),
+        var(--background);
+      color: var(--white);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .download-panel {
+      width: min(100%, 520px);
+      padding: 36px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--panel);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .45);
+      text-align: center;
+    }
+
+    .flame {
+      margin-bottom: 12px;
+      font-size: 2.5rem;
+      filter: drop-shadow(0 0 12px rgba(237, 52, 52, .6));
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.7rem, 5vw, 2.2rem);
+    }
+
+    .description,
+    .status {
+      color: var(--muted);
+    }
+
+    .description {
+      margin: 0 0 28px;
+    }
+
+    .progress-track {
+      height: 14px;
+      overflow: hidden;
+      border: 1px solid #554443;
+      border-radius: 999px;
+      background: #090909;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #fff, #ffdada);
+      box-shadow: 0 0 16px rgba(255, 255, 255, .45);
+      transition: width 180ms ease;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+      font-size: .9rem;
+    }
+
+    .status {
+      margin: 22px 0 0;
+      min-height: 1.6em;
+    }
+
+    .download-link {
+      display: none;
+      margin-top: 20px;
+      padding: 11px 18px;
+      border: 1px solid #ff6a5a;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #c91f29, #8d151d);
+      color: white;
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .download-link:hover {
+      background: linear-gradient(135deg, #ff5a3d, #c91f29);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: .9rem;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      color: white;
+    }
+
+    @media (max-width: 480px) {
+      .download-panel {
+        padding: 28px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="download-panel">
+    <div class="flame" aria-hidden="true">🔥</div>
+    <h1>Your addon is on its way</h1>
+    <p class="description" id="addon-name">Getting your addon ready...</p>
+
+    <div
+      class="progress-track"
+      role="progressbar"
+      aria-label="Download progress"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="0"
+    >
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <div class="progress-info">
+      <span id="status">Connecting...</span>
+      <span id="percentage">0%</span>
+    </div>
+
+    <p class="status" id="message" aria-live="polite">
+      Please keep this page open while the file downloads.
+    </p>
+
+    <a class="download-link" id="download-link" href="#">Download addon</a>
+    <br>
+    <a class="back-link" href="index.html">← Back to addons</a>
+  </main>
+
+  <script>
+    // The page accepts only addon files inside the downloads/ folder.
+    const requestedFile = new URLSearchParams(window.location.search).get("file");
+    const safeFile = requestedFile &&
+      /^downloads\/[a-zA-Z0-9._/-]+\.mcaddon$/.test(requestedFile) &&
+      !requestedFile.includes("..")
+        ? requestedFile
+        : "downloads/infernal-survival.mcaddon";
+
+    const fill = document.querySelector("#progress-fill");
+    const track = document.querySelector(".progress-track");
+    const percentage = document.querySelector("#percentage");
+    const status = document.querySelector("#status");
+    const message = document.querySelector("#message");
+    const addonName = document.querySelector("#addon-name");
+    const downloadLink = document.querySelector("#download-link");
+
+    function setProgress(value) {
+      const percent = Math.max(0, Math.min(100, Math.round(value)));
+      fill.style.width = `${percent}%`;
+      percentage.textContent = `${percent}%`;
+      track.setAttribute("aria-valuenow", String(percent));
+    }
+
+    addonName.textContent = safeFile.split("/").pop();
+
+    const request = new XMLHttpRequest();
+    request.open("GET", safeFile);
+    request.responseType = "blob";
+
+    let fallbackProgress = 0;
+    let fallbackTimer;
+
+    request.onloadstart = () => {
+      status.textContent = "Downloading";
+      // If the server does not report file size, show gradual progress
+      // until the download finishes.
+      fallbackTimer = window.setInterval(() => {
+        if (fallbackProgress < 90) {
+          fallbackProgress += 1;
+          setProgress(fallbackProgress);
+        }
+      }, 100);
+    };
+
+    request.onprogress = (event) => {
+      if (event.lengthComputable && event.total > 0) {
+        window.clearInterval(fallbackTimer);
+        setProgress((event.loaded / event.total) * 100);
+      }
+    };
+
+    request.onload = () => {
+      window.clearInterval(fallbackTimer);
+
+      if (request.status < 200 || request.status >= 300) {
+        showError("The addon file could not be found. Check the file path and try again.");
+        return;
+      }
+
+      setProgress(100);
+      status.textContent = "Ready";
+      message.textContent = "Your download should begin automatically.";
+
+      const blobUrl = URL.createObjectURL(request.response);
+      const filename = safeFile.split("/").pop();
+
+      downloadLink.href = blobUrl;
+      downloadLink.download = filename;
+
+      // Start the browser download, with a visible fallback link.
+      downloadLink.click();
+      downloadLink.style.display = "inline-block";
+      message.textContent = "If the download didn't start, use the button below.";
+    };
+
+    request.onerror = () => {
+      window.clearInterval(fallbackTimer);
+      showError("Download failed. Check your connection and try again.");
+    };
+
+    function showError(text) {
+      status.textContent = "Unable to download";
+      message.textContent = text;
+      downloadLink.textContent = "Try again";
+      downloadLink.href = `download.html?file=${encodeURIComponent(safeFile)}`;
+      downloadLink.style.display = "inline-block";
+      setProgress(0);
+    }
+
+    request.send();
+  </script>
+</body>
+</html>
