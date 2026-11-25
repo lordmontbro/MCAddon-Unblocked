@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Browse CurseForge Minecraft addons. Each addon includes install and project links.">
+  <meta name="theme-color" content="#090909">
+  <title>CurseForge Addons | My Addon World</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --black: #090909;
+      --black-soft: #111111;
+      --red-black: #1a0909;
+      --panel: #171414;
+      --panel-light: #251918;
+      --fire: #ed3434;
+      --fire-bright: #ff5a3d;
+      --text: #fff7f5;
+      --muted: #baa9a6;
+      --border: #432727;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% 15%, rgba(183, 28, 28, .18), transparent 30rem),
+        linear-gradient(180deg, var(--red-black), var(--black) 42%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; }
+    .container { width: min(1100px, calc(100% - 32px)); margin: 0 auto; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+      background: rgba(9, 9, 9, .92);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text);
+      font-size: 1.12rem;
+      font-weight: 850;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .brand-avatar {
+      width: 54px;
+      height: 54px;
+      object-fit: cover;
+      object-position: center;
+      border: 2px solid var(--fire);
+      border-radius: 12px;
+      background: #0d1326;
+      box-shadow: 0 0 18px rgba(237, 52, 52, .35);
+    }
+
+    .nav-links { display: flex; gap: 20px; }
+    .nav-links a { color: var(--muted); text-decoration: none; }
+    .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fire-bright); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 300px;
+      display: grid;
+      place-items: center;
+      padding: 55px 0;
+      text-align: center;
+    }
+
+    .hero::before, .hero::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: rgba(210, 31, 31, .18);
+      filter: blur(70px);
+    }
+
+    .hero::before { left: -90px; bottom: -130px; }
+    .hero::after { right: -90px; top: -170px; }
+
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      line-height: 1;
+      text-transform: uppercase;
+      text-shadow: 0 0 30px rgba(237, 52, 52, .22);
+    }
+
+    .hero h1 span { color: var(--fire-bright); }
+    .hero p { max-width: 620px; margin: 18px auto 0; color: var(--muted); font-size: 1.1rem; }
+    main { padding-bottom: 64px; }
+
+    .toolbar { display: flex; justify-content: flex-end; margin: 18px 0 24px; }
+
+    .search {
+      width: min(100%, 340px);
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--black-soft);
+      color: var(--text);
+      font: inherit;
+    }
+
+    .search:focus, .addon-link:focus-visible, .nav-links a:focus-visible {
+      outline: 3px solid var(--fire);
+      outline-offset: 3px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 8px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      font-size: 1.8rem;
+    }
+
+    .section-heading::after {
+      content: "";
+      height: 2px;
+      flex: 1;
+      background: linear-gradient(90deg, var(--fire), transparent);
+    }
+
+    .section-description { margin: 0 0 20px; color: var(--muted); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 260px;
+      overflow: hidden;
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(145deg, rgba(255, 71, 71, .035), transparent 45%), var(--panel);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .24);
+    }
+
+    .card[hidden] { display: none; }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      right: -50px;
+      bottom: -70px;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: rgba(237, 52, 52, .08);
+      filter: blur(18px);
+      pointer-events: none;
+    }
+
+    .card h2 { margin: 0 0 8px; font-size: 1.35rem; }
+    .card p { margin: 0 0 22px; color: var(--muted); }
+
+    .tag {
+      align-self: flex-start;
+      margin-bottom: 14px;
+      padding: 3px 9px;
+      border: 1px solid #632929;
+      border-radius: 999px;
+      background: #2c1515;
+      color: #ffa59a;
+      font-size: .8rem;
+    }
+
+    .card-actions {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .addon-link {
+      flex: 1 1 130px;
+      display: inline-block;
+      padding: 10px 13px;
+      border: 1px solid var(--fire-bright);
+      border-radius: 9px;
+      background: linear-gradient(135deg, #c91f29, #8d151d);
+      color: white;
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(237, 52, 52, .14);
+    }
+
+    .addon-link.secondary {
+      border-color: #6b5551;
+      background: #241d1c;
+      color: var(--text);
+      box-shadow: none;
+    }
+
+    .addon-link:hover { background: linear-gradient(135deg, var(--fire-bright), #c91f29); }
+    .addon-link.secondary:hover { border-color: var(--fire-bright); background: #351919; }
+
+    .empty-state { display: none; padding: 32px; color: var(--muted); text-align: center; }
+
+    footer {
+      padding: 24px 0;
+      border-top: 1px solid var(--border);
+      background: #080808;
+      color: var(--muted);
+      font-size: .9rem;
+      text-align: center;
+    }
+
+    @media (max-width: 560px) {
+      .nav { min-height: 68px; }
+      .brand-avatar { width: 46px; height: 46px; }
+      .brand { font-size: .95rem; }
+      .nav-links { gap: 12px; font-size: .9rem; }
+      .hero { min-height: 270px; }
+      .toolbar { justify-content: stretch; }
+      .search { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <img class="brand-avatar" src="avatar.png" alt="Addon mascot">
+        <span>My Addon World</span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="curseforge.html" aria-current="page">CurseForge</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>CurseForge <span>Addons</span></h1>
+      <p>Browse the CurseForge addons collected here. Each listing has an install link and a link to its project page.</p>
+    </div>
+  </section>
+
+  <main class="container">
+    <div class="toolbar">
+      <input class="search" id="search" type="search" placeholder="Search CurseForge addons..." aria-label="Search CurseForge addons">
+    </div>
+
+    <section aria-labelledby="addons-heading">
+      <h2 class="section-heading" id="addons-heading">All CurseForge Addons</h2>
+      <p class="section-description">Use Install this addon for the file, or View on site to open its CurseForge project page.</p>
+
+      <div class="grid" id="addon-grid">
+        <!-- To add an addon, duplicate a card and update its title, description, install URL, and CurseForge URL. -->
+        <article class="card">
+          <span class="tag">CurseForge</span>
+          <h2>Addon One</h2>
+          <p>Replace this sample description with details about the addon.</p>
+          <div class="card-actions">
+            <a class="addon-link" href="downloads/addon-one.mcaddon" download>Install this addon</a>
+            <a class="addon-link secondary" href="https://www.curseforge.com/minecraft-bedrock" target="_blank" rel="noopener noreferrer">View on site</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="tag">CurseForge</span>
+          <h2>Addon Two</h2>
+          <p>Replace this sample description with details about the addon.</p>
+          <div class="card-actions">
+            <a class="addon-link" href="downloads/addon-two.mcaddon" download>Install this addon</a>
+            <a class="addon-link secondary" href="https://www.curseforge.com/minecraft-bedrock" target="_blank" rel="noopener noreferrer">View on site</a>
+          </div>
+        </article>
+      </div>
+
+      <p class="empty-state" id="empty-state" aria-live="polite">No addons found. Try another search.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Made by MontBro Studios. Not affiliated with Mojang or CurseForge.</p>
+    </div>
+  </footer>
+
+  <script>
+    const searchInput = document.querySelector("#search");
+    const cards = document.querySelectorAll(".card");
+    const emptyState = document.querySelector("#empty-state");
+
+    function updateCards() {
+      const searchTerm = searchInput.value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const matches = card.textContent.toLowerCase().includes(searchTerm);
+        card.hidden = !matches;
+        if (matches) visibleCount++;
+      });
+
+      emptyState.style.display = visibleCount === 0 ? "block" : "none";
+    }
+
+    searchInput.addEventListener("input", updateCards);
+  </script>
+</body>
+</html>
