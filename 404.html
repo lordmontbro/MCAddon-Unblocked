@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090909">
+  <title>404 — Page Not Found</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      margin: 0;
+      padding: 24px;
+      background:
+        radial-gradient(ellipse at 50% 40%, rgba(183, 28, 28, .2), transparent 55%),
+        #090909;
+      color: #fff7f5;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      text-align: center;
+    }
+
+    main {
+      width: min(100%, 620px);
+      padding: 40px 28px;
+      border: 1px solid #432727;
+      border-radius: 20px;
+      background: #171414;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .45);
+    }
+
+    .code {
+      margin: 0;
+      color: #ed3434;
+      font-size: clamp(5rem, 18vw, 8rem);
+      font-weight: 900;
+      line-height: 1;
+      text-shadow: 0 0 28px rgba(237, 52, 52, .35);
+    }
+
+    h1 {
+      margin: 18px 0 10px;
+      font-size: clamp(1.4rem, 5vw, 2rem);
+    }
+
+    p {
+      margin: 0;
+      color: #baa9a6;
+      font-size: .95rem;
+    }
+
+    a {
+      color: #ff6a5a;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    a:hover {
+      color: #ffaaa0;
+    }
+
+    a:focus-visible {
+      outline: 3px solid #ed3434;
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="code" aria-hidden="true">404</p>
+    <h1>We see that you have gone to a page on our site that doesn't exist</h1>
+    <p>
+      Check our
+      <a href="https://lordmontbro.github.io/MCAddon-Unblocked">main site</a>
+      to find other resources!
+    </p>
+  </main>
+</body>
+</html>
